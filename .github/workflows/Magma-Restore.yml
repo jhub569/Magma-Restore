@@ -13,20 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ==========================================================
-      # 从私有 repo 拉取脚本（已替换为官方 Actions 组件，解决 404 错误）
-      # ==========================================================
+      # =========================
+      # 从私有 repo 拉取脚本
+      # 用 curl + PAT Token 直接下载原始文件
+      # 避免 checkout 路径问题导致 "No such file" 报错
+      # =========================
       - name: 拉取 restore.py
-        uses: actions/checkout@v4
-        with:
-          repository: 'jhub569/MagmaRestore-auto' # 精准锁定的私库地址
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          path: 'temp_private_repo' # 先下载到临时目录
-
-      - name: 迁移并验证 restore.py
         run: |
           mkdir -p scripts/screenshots
-          cp temp_private_repo/restore.py scripts/restore.py
+          curl -fsSL \
+            -H "Authorization: token ${{ secrets.PRIVATE_REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3.raw" \
+            "https://api.github.com/repos/${{ github.repository_owner }}/MagmaRestore-auto/contents/restore.py" \
+            -o scripts/restore.py
           ls -lh scripts/restore.py && echo "✅ restore.py 下载成功" || \
             (echo "❌ restore.py 下载失败" && exit 1)
 
