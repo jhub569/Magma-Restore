@@ -24,7 +24,7 @@ jobs:
           curl -fsSL \
             -H "Authorization: token ${{ secrets.PRIVATE_REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3.raw" \
-            "https://api.github.com/repos/${{ github.repository_owner }}/MagmaRestore-auto/contents/restore.py" \
+            "https://api.github.com/repos/jhub569/MagmaRestore-auto/contents/restore.py?ref=main" \
             -o scripts/restore.py
           ls -lh scripts/restore.py && echo "✅ restore.py 下载成功" || \
             (echo "❌ restore.py 下载失败" && exit 1)
